@@ -8,16 +8,25 @@ def _base64decode(cipher=''):
     if not cipher:
         return ''
     # Padding and decoding
-    data = cipher + '=' * (4 - len(cipher) % 4)
-    plain = base64.urlsafe_b64decode(data)
+    cipher = cipher + '=' * (4 - len(cipher) % 4)
+    plain = base64.urlsafe_b64decode(cipher)
     return plain
+
+
+def _base64encode(pain=''):
+    if not pain:
+        return ''
+    # Encoding and remove padding
+    cipher = base64.urlsafe_b64encode(pain)
+    cipher = cipher.rstrip('=')
+    return cipher
 
 
 def url2json(url=''):
     """Convert the SSR URL to JSON."""
     # The url must start with 'ssr://'
     if not url.find('ssr://') == 0:
-        return 1
+        return None
 
     # Decode the payload
     payload = url[6:]
@@ -42,14 +51,31 @@ def url2json(url=''):
     return jdata
 
 
-def json2url():
+def json2url(jdata={}):
+    # Check keywords and compose the paintext
+    for keyword in ('server', 'port', 'protocol', 'method', 'obfs', 'password'):
+        if keyword not in jdata:
+            print '%s is missing in the json code.' % keyword
+            return None
+
+    text = ':'.join(
+        map(lambda x: jdata[x], ('server', 'port', 'protocol', 'method', 'obfs')))
+    text = text + ':' + _base64encode(jdata['password'])
+
+    print text
+    exit()
+
+    for param in ('protoparam', 'obfsparam', 'remarks', 'group', 'udpport', 'uot'):
     pass
 
 
-def json2url():
-    pass
+
+
 
 
 if __name__ == '__main__':
-    url2json(url=url)
+
+    j = url2json(url)
+    u = json2url(j)
+    print u
     exit(0)
