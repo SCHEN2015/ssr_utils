@@ -90,6 +90,38 @@ def json2url(jdata={}):
     return(url)
 
 
+def rss2urls():
+    pass
+
+
+def urls2rss():
+    pass
+
+
+def urls2jsons(url_list):
+    """Covert a list of SSR URL to a list of JSON data."""
+    if not isinstance(url_list, (list, tuple)):
+        return None
+
+    jdata_list = []
+    for url in url_list:
+        jdata = url2json(url)
+        jdata_list.append(jdata)
+    return jdata_list
+
+
+def jsons2urls(jdata_list):
+    """Covert a list of SSR JSON data to a list of URL."""
+    if not isinstance(jdata_list, (list, tuple)):
+        return None
+
+    url_list = []
+    for jdata in jdata_list:
+        url = json2url(jdata)
+        url_list.append(url)
+    return url_list
+
+
 def _unit_test():
     # format:
     # ssr://server:port:protocol:method:obfs:password_base64/?params_base64
@@ -105,9 +137,14 @@ nQ9MCZ1b3Q9MA'
              'group': '\xe5\x9b\xbd\xe9\x99\x85\xe5\x8a\xa0\xe9\x80\x9f\xe7\xba\xbf\xe8\xb7\xaf'}
 
     if jdata == url2json(url) and url == json2url(jdata):
-        print 'UnitTest: PASS'
+        print 'UnitTest(1): PASS'
     else:
-        print 'UnitTest: FAIL'
+        print 'UnitTest(1): FAIL'
+
+    if [jdata, jdata] == urls2jsons([url, url]) and [url, url] == jsons2urls([jdata, jdata]):
+        print 'UnitTest(2): PASS'
+    else:
+        print 'UnitTest(2): FAIL'
 
 
 if __name__ == '__main__':
